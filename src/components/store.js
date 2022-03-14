@@ -5,11 +5,21 @@ import Menu from "./menu";
 const API_KEY = "67d9edc0-e6a3-11e3-9798-57275476509a";
 const FETCH_URL = "https://api.harvardartmuseums.org/object";
 
+const local = () => {
+  let storage = localStorage.getItem("bag");
+
+  if (storage) {
+    return JSON.parse(localStorage.getItem("bag"));
+  } else {
+    return [];
+  }
+};
+
 export default function Store() {
   let [data, setData] = useState([]);
   let [page, setPage] = useState(1);
   let [bagIcon, setBagIcon] = useState("empty");
-  let [bag, setBag] = useState([]);
+  let [bag, setBag] = useState(local());
   let [isBag, setIsBag] = useState(false);
   let [isOpenBag, setIsOpenBag] = useState(false);
   let [modalDiv, setModalDiv] = useState("");
@@ -78,6 +88,8 @@ export default function Store() {
             setBag={setBag}
             modalDiv={modalDiv}
             isOpenBag={isOpenBag}
+            setBagIcon={setBagIcon}
+            setIsBag={setIsBag}
           />
         </div>
       </div>

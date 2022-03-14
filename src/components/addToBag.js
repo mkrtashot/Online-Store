@@ -1,52 +1,72 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function AddToBag({ title, price, bag, setBag, images, id }) {
+export default function AddToBag({
+  title,
+  price,
+  bag,
+  setBag,
+  images,
+  id,
+  setBagIcon,
+  setIsBag,
+}) {
   let [countCheck, setCount] = useState(0);
+  let [itemInTheBag, setItemInTheBag] = useState(false);
 
   const addBag = () => {
-    if (countCheck > 0) {
-      let flag = true;
+    setItemInTheBag(true);
 
-      for (let i = 0; i < bag.length; i++) {
-        if (bag[i][id]) {
-          bag[i].count += countCheck;
-          setCount(0);
-          flag = false;
+    setBag([...bag, { title, price, images, count: 1, id, [id]: true }]);
+    setCount(1);
+  };
+
+  const handleMinus = () => {
+    if (countCheck > 1) {
+      setCount(countCheck - 1);
+    } else if (countCheck === 1) {
+      setItemInTheBag(false);
+
+      let deleteItem;
+      bag.forEach((item, index) => {
+        if (item.id === id) {
+          deleteItem = index;
         }
-      }
-      if (flag) {
-        setBag([
-          ...bag,
-          { title, price, images, count: countCheck, id, [id]: true },
-        ]);
-        setCount(0);
+      });
+
+      let newArr = bag.filter((el) => {
+        if (!el[id]) {
+          return el;
+        }
+      });
+
+      setBag(newArr);
+      setBagIcon("empty");
+      setIsBag(false);
+    }
+  };
+
+  const handlePlus = () => {
+    setCount(countCheck + 1);
+    for (let i = 0; i < bag.length; i++) {
+      if (bag[i][id]) {
+        ++bag[i].count;
       }
     }
   };
 
-  console.log(bag);
+  useEffect(() => {
+    localStorage.setItem("bag", JSON.stringify(bag));
+  }, [bag]);
 
   return (
     <>
-      {" "}
-      <button
-        onClick={() => {
-          setCount(countCheck + 1);
-        }}
-      >
-        +
-      </button>
-      {countCheck}
-      <button
-        onClick={() => {
-          if (countCheck > 0) {
-            setCount(countCheck - 1);
-          }
-        }}
-      >
-        -
-      </button>
-      <button onClick={addBag}>add to bag</button>
+      {(itemInTheBag && (
+        <>
+          <button onClick={handlePlus}>+</button>
+          {countCheck}
+          <button onClick={handleMinus}>-</button>
+        </>
+      )) || <button onClick={addBag}>add to bag</button>}
     </>
   );
 }

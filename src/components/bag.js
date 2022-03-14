@@ -6,6 +6,7 @@ export default function Bag({
   handleSetBagIcon,
   setIsOpenBag,
   isOpenBag,
+  setIsBag,
 }) {
   const [items, setItems] = useState(bag);
   let [totalPrice, setTotalPrice] = useState(0);
@@ -51,6 +52,10 @@ export default function Bag({
 
     handleSetBag(newArr);
     setItems(newArr);
+
+    if (bag.length === 1) {
+      setIsBag(false);
+    }
   };
 
   useEffect(() => {

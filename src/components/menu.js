@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react";
 import AddToBag from "./addToBag";
 
-export default function Menu({ data, bag, setBag, modalDiv }) {
+export default function Menu({
+  data,
+  bag,
+  setBag,
+  modalDiv,
+  setBagIcon,
+  setIsBag,
+}) {
   return (
     <>
       {data.map(({ images, id, title, totalpageviews, classification }) => {
@@ -19,6 +26,8 @@ export default function Menu({ data, bag, setBag, modalDiv }) {
                 setBag={setBag}
                 id={id}
                 images={images[0].baseimageurl}
+                setBagIcon={setBagIcon}
+                setIsBag={setIsBag}
               />
             </div>
           </div>
