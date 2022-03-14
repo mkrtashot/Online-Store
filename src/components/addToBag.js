@@ -1,5 +1,15 @@
 import { useEffect, useState } from "react";
 
+const countLocal = (id) => {
+  let count = localStorage.getItem(id);
+
+  if (count) {
+    return JSON.parse(localStorage.getItem(id));
+  } else {
+    return 0;
+  }
+};
+
 export default function AddToBag({
   title,
   price,
@@ -10,8 +20,10 @@ export default function AddToBag({
   setBagIcon,
   setIsBag,
 }) {
-  let [countCheck, setCount] = useState(0);
+  let [countCheck, setCount] = useState(countLocal(id));
   let [itemInTheBag, setItemInTheBag] = useState(false);
+
+  let currentCount = JSON.parse(localStorage.getItem(id));
 
   const addBag = () => {
     setItemInTheBag(true);
@@ -24,6 +36,7 @@ export default function AddToBag({
     if (countCheck > 1) {
       setCount(countCheck - 1);
     } else if (countCheck === 1) {
+      setCount(countCheck - 1);
       setItemInTheBag(false);
 
       let deleteItem;
@@ -56,7 +69,30 @@ export default function AddToBag({
 
   useEffect(() => {
     localStorage.setItem("bag", JSON.stringify(bag));
+
+    bag.map((el) => {
+      if (el.id === id) {
+        setCount(el.count);
+      }
+    });
   }, [bag]);
+
+  useEffect(() => {
+    localStorage.setItem(id, JSON.stringify(countCheck));
+
+    if (countCheck > 0) {
+      setItemInTheBag(true);
+    }
+
+    const newBag = bag.map((el) => {
+      if (el.id === id) {
+        el = { ...el, count: countCheck };
+      }
+      return el;
+    });
+
+    setBag(newBag);
+  }, [countCheck]);
 
   return (
     <>

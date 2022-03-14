@@ -8,7 +8,6 @@ export default function Bag({
   isOpenBag,
   setIsBag,
 }) {
-  const [items, setItems] = useState(bag);
   let [totalPrice, setTotalPrice] = useState(0);
 
   const addBag = (id) => {
@@ -20,7 +19,6 @@ export default function Bag({
     });
 
     handleSetBag(newBag);
-    setItems(newBag);
   };
 
   const minusBag = (id) => {
@@ -33,48 +31,49 @@ export default function Bag({
     });
 
     handleSetBag(newBag);
-    setItems(newBag);
   };
 
   const deleteItem = (id) => {
     let deleteItem;
-    items.forEach((item, index) => {
+    bag.forEach((item, index) => {
       if (item.id === id) {
         deleteItem = index;
+        handleSetBag(...bag, { ...item, count: 0 });
       }
     });
 
-    let newArr = items.filter((el) => {
+    let newArr = bag.filter((el) => {
       if (!el[id]) {
         return el;
       }
     });
 
     handleSetBag(newArr);
-    setItems(newArr);
 
     if (bag.length === 1) {
       setIsBag(false);
     }
+
+    localStorage.setItem(id, JSON.stringify(0));
   };
 
   useEffect(() => {
     let price = 0;
-    items.filter((it) => {
+    bag.filter((it) => {
       price += it.price * it.count;
     });
     setTotalPrice(price);
 
-    if (items.length > 0) {
-      if (items.length === 1) {
-        handleSetBagIcon(items.length + " item");
+    if (bag.length > 0) {
+      if (bag.length === 1) {
+        handleSetBagIcon(bag.length + " item");
       } else {
-        handleSetBagIcon(items.length + " items");
+        handleSetBagIcon(bag.length + " items");
       }
     } else {
       handleSetBagIcon("empty");
     }
-  }, [items]);
+  }, [bag]);
 
   const handleIsBag = () => {
     setIsOpenBag(false);
@@ -92,7 +91,7 @@ export default function Bag({
           <button className="close" onClick={handleIsBag}>
             X
           </button>
-          {items.map(({ id, title, images, price, count }, index) => {
+          {bag.map(({ id, title, images, price, count }, index) => {
             return (
               <div key={id}>
                 Item #{index + 1} <br />
