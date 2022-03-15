@@ -72,6 +72,7 @@ export default function Bag({
       }
     } else {
       handleSetBagIcon("empty");
+      setIsOpenBag(false);
     }
   }, [bag]);
 

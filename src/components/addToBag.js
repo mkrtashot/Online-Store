@@ -70,11 +70,19 @@ export default function AddToBag({
   useEffect(() => {
     localStorage.setItem("bag", JSON.stringify(bag));
 
+    let flag = 0;
+
     bag.map((el) => {
       if (el.id === id) {
         setCount(el.count);
+        flag++;
       }
     });
+
+    if (flag === 0) {
+      setCount(0);
+      setItemInTheBag(false);
+    }
   }, [bag]);
 
   useEffect(() => {
